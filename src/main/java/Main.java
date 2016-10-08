@@ -27,9 +27,9 @@ public class Main extends HttpServlet{
                 String path = request.getRequestURI();
                 String[] pathPieces = path.split("/");
                 try {
+                } finally {
                     connection.close();
                 }
-                catch (SQLException ignored) {}
             }
         }
         catch (Exception e) {
@@ -65,13 +65,18 @@ public class Main extends HttpServlet{
                 JSONObject jsonObject = new JSONObject(requestBody.toString());
                 String path = request.getRequestURI();
                 String[] pathPieces = path.split("/");
+                if (pathPieces[1].equals("createAccount")) {
+                    CreateAccount.createAccount(request, response, connection, jsonObject);
+                }
             }
             catch (JSONException e) {
                 response.setStatus(Constants.BAD_REQUEST);
                 //response.getWriter().print(Constants.BAD_BODY_MESSAGE);
             }
-
-            finally {
+            catch (IOException e) {
+                response.setStatus(Constants.INTERNAL_SERVER_ERROR);
+                response.getWriter().print(e.getStackTrace());
+            } finally {
                 try {
                     connection.close();
                 }
