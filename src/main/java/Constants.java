@@ -9,6 +9,11 @@ public class Constants {
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
 
+    //email
+    public static final String FROM_EMAIL = "CS180Team7";
+    public static final String ACTIVATE_EMAIL_TITLE = "<Placeholder> Account Activation";
+    public static final String ACTIVATE_EMAIL_BASE = "Please click on the following link to activate your account:\n";
+
     //error msgs
     public static final String CREATE_ACCOUNT_ERROR = "Error in account creation.";
 }
