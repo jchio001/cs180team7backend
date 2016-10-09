@@ -24,6 +24,16 @@ public class CreateAccount {
         try {
             String phoneNum = reqBody.getString(Constants.NUMBER_KEY);
 
+            try {
+                if (phoneNum.length() != 10) {
+                    throw new JSONException(Constants.NUMBER_TOO_SHORT);
+                }
+
+                int tmp = Integer.parseInt(phoneNum);
+            } catch (NumberFormatException e) {
+                throw new JSONException(Constants.INVALID_NUMBER);
+            }
+
             String createSQL = "INSERT INTO account(account__phone_number, account__password, account__active, account__code) " +
                 "VALUES (?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(createSQL, Statement.RETURN_GENERATED_KEYS);

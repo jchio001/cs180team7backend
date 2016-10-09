@@ -28,5 +28,7 @@ public class Constants {
     public static final String ACTIVATE_EMAIL_BASE = "Please click on the following link to activate your account:\n";
 
     //error msgs
+    public static final String NUMBER_TOO_SHORT = "Phone number too short.";
+    public static final String INVALID_NUMBER = "Invalid phone number.";
     public static final String CREATE_ACCOUNT_ERROR = "Error in account creation.";
 }

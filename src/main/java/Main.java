@@ -73,7 +73,7 @@ public class Main extends HttpServlet{
 
             } catch (JSONException e) {
                 response.setStatus(Constants.BAD_REQUEST);
-                //response.getWriter().print(Constants.BAD_BODY_MESSAGE);
+                response.getWriter().print(getStackTrace(e));
             } catch (IOException e) {
                 response.setStatus(Constants.INTERNAL_SERVER_ERROR);
                 response.getWriter().print(e.getStackTrace());
