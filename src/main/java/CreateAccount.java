@@ -53,7 +53,7 @@ public class CreateAccount {
         throws IOException {
         try {
             Properties properties = System.getProperties();
-            properties.setProperty("mail.smtp.host", "heroku");
+            properties.setProperty("mail.smtp.host", "localhost");
             Session session = Session.getDefaultInstance(properties);
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(Constants.FROM_EMAIL));
