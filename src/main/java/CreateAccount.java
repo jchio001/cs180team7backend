@@ -48,7 +48,7 @@ public class CreateAccount {
 
         } catch (SQLException e) {
             resp.setStatus(Constants.INTERNAL_SERVER_ERROR);
-            resp.getWriter().print(e.getStackTrace());
+            resp.getWriter().print(Main.getStackTrace(e));
         }
     }
 
@@ -66,7 +66,7 @@ public class CreateAccount {
             Transport.send(message);
         } catch (Exception e) {
             resp.setStatus(Constants.INTERNAL_SERVER_ERROR);
-            resp.getWriter().print(e.getStackTrace());
+            resp.getWriter().print(Main.getStackTrace(e));
         }
     }
 }
