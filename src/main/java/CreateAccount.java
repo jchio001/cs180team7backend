@@ -9,10 +9,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 import java.util.Random;
 
@@ -27,7 +24,7 @@ public class CreateAccount {
 
             String createSQL = "INSERT INTO account(account__email, account__password, account__active, account__code) " +
                 "VALUES (?, ?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(createSQL);
+            PreparedStatement stmt = conn.prepareStatement(createSQL, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, email);
             stmt.setString(2, reqBody.getString(Constants.PASSWORD_KEY));
             stmt.setBoolean(3, false);
@@ -35,8 +32,8 @@ public class CreateAccount {
             Random random = new Random();
             int code = random.nextInt(9000) + 1000;
             stmt.setInt(4, code);
-            stmt.executeUpdate();
 
+            stmt.executeUpdate();
             ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
                 int id = keys.getInt(1);
