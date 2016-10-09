@@ -1,4 +1,17 @@
 public class Constants {
+    //Twilio account information
+    public static final String ACCOUNT_SID = "AC181994597bdbbc2f83c85fe1e8cc287a";
+    public static final String AUTH_TOKEN = "b52d5d02553af74de5945d78c83f905c";
+
+    //Twilio constants
+    public static final String TO = "To";
+    public static final String FROM = "From";
+    public static final String BODY = "Body";
+    public static final String FROM_NUMBER = "6502851269";
+
+    //Twilio msg
+    public static final String MSG = "Your verification number is \n";
+
     //status codes
     public static final int BAD_REQUEST = 400;
     public static final int UNAUTHORIZED = 401;
@@ -6,7 +19,7 @@ public class Constants {
     public static final int INTERNAL_SERVER_ERROR = 500;
 
     //keys
-    public static final String EMAIL_KEY = "email";
+    public static final String NUMBER_KEY = "phone_number";
     public static final String PASSWORD_KEY = "password";
 
     //email

@@ -1,16 +1,18 @@
+import com.twilio.sdk.TwilioRestClient;
+import com.twilio.sdk.TwilioRestException;
+import com.twilio.sdk.resource.factory.MessageFactory;
+import com.twilio.sdk.resource.instance.Message;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -18,14 +20,14 @@ import java.util.Random;
  */
 public class CreateAccount {
     public static void createAccount(HttpServletRequest req, HttpServletResponse resp, Connection conn,
-                              JSONObject reqBody) throws IOException, JSONException{
+                              JSONObject reqBody) throws IOException, JSONException, TwilioRestException{
         try {
-            String email = reqBody.getString(Constants.EMAIL_KEY);
+            String phoneNum = reqBody.getString(Constants.NUMBER_KEY);
 
-            String createSQL = "INSERT INTO account(account__email, account__password, account__active, account__code) " +
+            String createSQL = "INSERT INTO account(account__phone_number, account__password, account__active, account__code) " +
                 "VALUES (?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(createSQL, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, email);
+            stmt.setString(1, phoneNum);
             stmt.setString(2, reqBody.getString(Constants.PASSWORD_KEY));
             stmt.setBoolean(3, false);
 
@@ -38,7 +40,7 @@ public class CreateAccount {
             if (keys.next()) {
                 int id = keys.getInt(1);
                 resp.getWriter().print(id);
-                sendEmail(resp, email, code);
+                sendText(resp, phoneNum, code);
             } else {
                 throw new SQLException(Constants.CREATE_ACCOUNT_ERROR);
             }
@@ -49,21 +51,15 @@ public class CreateAccount {
         }
     }
 
-    public static final void sendEmail(HttpServletResponse resp, String to, int code)
-        throws IOException {
-        try {
-            Properties properties = System.getProperties();
-            properties.setProperty("mail.smtp.host", "localhost");
-            Session session = Session.getDefaultInstance(properties);
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(Constants.FROM_EMAIL));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(Constants.ACTIVATE_EMAIL_TITLE);
-            message.setText(Constants.ACTIVATE_EMAIL_BASE);
-            Transport.send(message);
-        } catch (Exception e) {
-            resp.setStatus(Constants.INTERNAL_SERVER_ERROR);
-            resp.getWriter().print(Main.getStackTrace(e));
-        }
+    public static final void sendText(HttpServletResponse resp, String to, int code)
+        throws TwilioRestException{
+        TwilioRestClient client = new TwilioRestClient(Constants.ACCOUNT_SID, Constants.AUTH_TOKEN);
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(Constants.TO, to));
+        params.add(new BasicNameValuePair(Constants.FROM, Constants.FROM_NUMBER));
+        params.add(new BasicNameValuePair(Constants.BODY, Constants.MSG + Integer.toString(code)));
+
+        MessageFactory messageFactory = client.getAccount().getMessageFactory();
+        Message msg = messageFactory.create(params);
     }
 }

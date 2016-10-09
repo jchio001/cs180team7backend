@@ -1,3 +1,4 @@
+import com.twilio.sdk.TwilioRestException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -68,12 +69,12 @@ public class Main extends HttpServlet{
                 if (pathPieces[1].equals("createAccount")) {
                     CreateAccount.createAccount(request, response, connection, jsonObject);
                 }
-            }
-            catch (JSONException e) {
+            } catch (TwilioRestException e) {
+
+            } catch (JSONException e) {
                 response.setStatus(Constants.BAD_REQUEST);
                 //response.getWriter().print(Constants.BAD_BODY_MESSAGE);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 response.setStatus(Constants.INTERNAL_SERVER_ERROR);
                 response.getWriter().print(e.getStackTrace());
             } finally {
