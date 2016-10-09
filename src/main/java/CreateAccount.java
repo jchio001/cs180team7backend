@@ -35,7 +35,7 @@ public class CreateAccount {
             Random random = new Random();
             int code = random.nextInt(9000) + 1000;
             stmt.setInt(4, code);
-            stmt.executeQuery();
+            stmt.executeUpdate();
 
             ResultSet keys = stmt.getGeneratedKeys();
             if (keys.next()) {
